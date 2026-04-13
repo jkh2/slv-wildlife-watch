@@ -1,133 +1,273 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>SLV Wildlife Watch</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <title>SLV Wildlife Watch</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet/dist/leaflet.css"
+  />
 
-<style>
-  body { margin:0; font-family: Arial; }
-  #map { height: 100vh; }
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
 
-  .panel {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    background: rgba(0,0,0,0.85);
-    color: white;
-    padding: 12px;
-    border-radius: 10px;
-    z-index: 1000;
-    width: 200px;
-  }
+    #map {
+      height: 100vh;
+      width: 100%;
+    }
 
-  select, button {
-    width: 100%;
-    margin-top: 6px;
-    padding: 5px;
-    border-radius: 5px;
-    border: none;
-  }
+    .panel {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      z-index: 1000;
+      width: 240px;
+      background: rgba(0, 0, 0, 0.88);
+      color: white;
+      padding: 12px;
+      border-radius: 10px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+    }
 
-  button {
-    background: gold;
-    font-weight: bold;
-    cursor: pointer;
-  }
-</style>
+    .panel h3 {
+      margin: 0 0 10px 0;
+      font-size: 18px;
+    }
+
+    .panel label {
+      display: block;
+      margin-top: 8px;
+      margin-bottom: 4px;
+      font-size: 13px;
+    }
+
+    .panel select,
+    .panel textarea,
+    .panel button {
+      width: 100%;
+      box-sizing: border-box;
+      border: none;
+      border-radius: 6px;
+      padding: 8px;
+      margin-top: 4px;
+      font-size: 14px;
+    }
+
+    .panel textarea {
+      resize: vertical;
+      min-height: 60px;
+    }
+
+    .panel button {
+      background: gold;
+      color: black;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    .panel button:hover {
+      opacity: 0.95;
+    }
+
+    .legend {
+      margin-top: 12px;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .status {
+      margin-top: 8px;
+      font-size: 12px;
+      color: #ddd;
+    }
+
+    @media (max-width: 700px) {
+      .panel {
+        width: calc(100% - 20px);
+        max-width: 320px;
+      }
+    }
+  </style>
 </head>
-
 <body>
+  <div class="panel">
+    <h3>SLV Wildlife Watch</h3>
 
-<div class="panel">
-  <b>SLV Wildlife Watch</b><br><br>
+    <label for="species">Species</label>
+    <select id="species">
+      <option>Mice</option>
+      <option>Rabbits</option>
+      <option>Magpies</option>
+      <option>Ravens</option>
+      <option>Hawks</option>
+      <option>Bugs</option>
+      <option>Fish</option>
+      <option>Crawdads</option>
+      <option>Other</option>
+    </select>
 
-  Species:
-  <select id="species">
-    <option>Mice</option>
-    <option>Rabbits</option>
-    <option>Magpies</option>
-    <option>Ravens</option>
-    <option>Hawks</option>
-    <option>Bugs</option>
-    <option>Fish</option>
-    <option>Crawdads</option>
-    <option>Other</option>
-  </select>
+    <label for="status">Status</label>
+    <select id="status">
+      <option>Missing</option>
+      <option>Less than usual</option>
+      <option>Normal</option>
+      <option>Boom</option>
+    </select>
 
-  Status:
-  <select id="status">
-    <option>Missing</option>
-    <option>Less than usual</option>
-    <option>Normal</option>
-    <option>Boom</option>
-  </select>
+    <label for="notes">Notes (optional)</label>
+    <textarea id="notes" placeholder="Example: Haven’t seen rabbits here in 3 weeks."></textarea>
 
-  <button onclick="enableReport()">Report on Map</button>
-</div>
+    <button onclick="enableReport()">Report on Map</button>
 
-<div id="map"></div>
+    <div class="legend">
+      🔴 Missing<br />
+      🟠 Less than usual<br />
+      🟢 Normal<br />
+      🔵 Boom
+    </div>
 
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <div class="status" id="statusMessage">Loading reports...</div>
+  </div>
 
-<script>
-let map = L.map('map').setView([37.7, -105.9], 8);
+  <div id="map"></div>
 
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  maxZoom: 18
-}).addTo(map);
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script>
+    const API_BASE = "https://odd-sun-692d.jameskharwood2.workers.dev";
 
-let reportMode = false;
-let reports = JSON.parse(localStorage.getItem("reports") || "[]");
+    const map = L.map("map").setView([37.7, -105.9], 8);
 
-function getColor(status) {
-  return {
-    "Missing": "red",
-    "Less than usual": "orange",
-    "Normal": "green",
-    "Boom": "blue"
-  }[status];
-}
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom: 18,
+      attribution: "&copy; OpenStreetMap contributors"
+    }).addTo(map);
 
-function renderReports() {
-  reports.forEach(r => {
-    L.circleMarker([r.lat, r.lng], {
-      radius: 8,
-      color: getColor(r.status)
-    })
-    .addTo(map)
-    .bindPopup(`<b>${r.species}</b><br>${r.status}`);
-  });
-}
+    let reportMode = false;
+    let markerLayer = L.layerGroup().addTo(map);
 
-renderReports();
+    function getColor(status) {
+      return {
+        "Missing": "red",
+        "Less than usual": "orange",
+        "Normal": "green",
+        "Boom": "blue"
+      }[status] || "gray";
+    }
 
-function enableReport() {
-  reportMode = true;
-  alert("Click anywhere on the map to place your report.");
-}
+    function setStatus(message) {
+      document.getElementById("statusMessage").textContent = message;
+    }
 
-map.on('click', function(e) {
-  if (!reportMode) return;
+    function renderReports(reports) {
+      markerLayer.clearLayers();
 
-  let species = document.getElementById("species").value;
-  let status = document.getElementById("status").value;
+      reports.forEach((r) => {
+        const marker = L.circleMarker([r.lat, r.lng], {
+          radius: 8,
+          color: getColor(r.status),
+          fillColor: getColor(r.status),
+          fillOpacity: 0.7,
+          weight: 2
+        });
 
-  let report = {
-    lat: e.latlng.lat,
-    lng: e.latlng.lng,
-    species,
-    status
-  };
+        const popupHtml = `
+          <b>${escapeHtml(r.species)}</b><br>
+          Status: ${escapeHtml(r.status)}<br>
+          ${r.notes ? `Notes: ${escapeHtml(r.notes)}<br>` : ""}
+          ${r.created_at ? `Reported: ${escapeHtml(r.created_at)}` : ""}
+        `;
 
-  reports.push(report);
-  localStorage.setItem("reports", JSON.stringify(reports));
+        marker.bindPopup(popupHtml);
+        markerLayer.addLayer(marker);
+      });
+    }
 
-  location.reload();
-});
-</script>
+    function escapeHtml(str) {
+      return String(str).replace(/[&<>"']/g, function (m) {
+        return {
+          "&": "&amp;",
+          "<": "&lt;",
+          ">": "&gt;",
+          '"': "&quot;",
+          "'": "&#039;"
+        }[m];
+      });
+    }
 
+    async function loadReports() {
+      try {
+        setStatus("Loading reports...");
+        const response = await fetch(`${API_BASE}/reports`);
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+
+        const reports = await response.json();
+        renderReports(reports);
+        setStatus(`Loaded ${reports.length} report(s).`);
+      } catch (error) {
+        console.error("Failed to load reports:", error);
+        setStatus("Could not load reports.");
+      }
+    }
+
+    function enableReport() {
+      reportMode = true;
+      setStatus("Report mode enabled. Click on the map to place your report.");
+      alert("Report mode enabled. Click on the map to place your report.");
+    }
+
+    async function submitReport(lat, lng) {
+      const species = document.getElementById("species").value;
+      const status = document.getElementById("status").value;
+      const notes = document.getElementById("notes").value.trim();
+
+      const payload = {
+        species,
+        status,
+        lat,
+        lng,
+        notes
+      };
+
+      try {
+        setStatus("Submitting report...");
+
+        const response = await fetch(`${API_BASE}/report`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+
+        document.getElementById("notes").value = "";
+        reportMode = false;
+        setStatus("Report submitted.");
+        await loadReports();
+      } catch (error) {
+        console.error("Failed to submit report:", error);
+        setStatus("Failed to submit report.");
+        alert("There was a problem submitting the report.");
+      }
+    }
+
+    map.on("click", async function (e) {
+      if (!reportMode) return;
+      await submitReport(e.latlng.lat, e.latlng.lng);
+    });
+
+    loadReports();
+  </script>
 </body>
 </html>
