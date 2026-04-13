@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>SLV Wildlife Watch</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+<style>
+  body { margin:0; font-family: Arial; }
+  #map { height: 100vh; }
+
+  .panel {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: rgba(0,0,0,0.85);
+    color: white;
+    padding: 12px;
+    border-radius: 10px;
+    z-index: 1000;
+    width: 200px;
+  }
+
+  select, button {
+    width: 100%;
+    margin-top: 6px;
+    padding: 5px;
+    border-radius: 5px;
+    border: none;
+  }
+
+  button {
+    background: gold;
+    font-weight: bold;
+    cursor: pointer;
+  }
+</style>
+</head>
+
+<body>
+
+<div class="panel">
+  <b>SLV Wildlife Watch</b><br><br>
+
+  Species:
+  <select id="species">
+    <option>Mice</option>
+    <option>Rabbits</option>
+    <option>Magpies</option>
+    <option>Ravens</option>
+    <option>Hawks</option>
+    <option>Bugs</option>
+    <option>Fish</option>
+    <option>Crawdads</option>
+    <option>Other</option>
+  </select>
+
+  Status:
+  <select id="status">
+    <option>Missing</option>
+    <option>Less than usual</option>
+    <option>Normal</option>
+    <option>Boom</option>
+  </select>
+
+  <button onclick="enableReport()">Report on Map</button>
+</div>
+
+<div id="map"></div>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<script>
+let map = L.map('map').setView([37.7, -105.9], 8);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  maxZoom: 18
+}).addTo(map);
+
+let reportMode = false;
+let reports = JSON.parse(localStorage.getItem("reports") || "[]");
+
+function getColor(status) {
+  return {
+    "Missing": "red",
+    "Less than usual": "orange",
+    "Normal": "green",
+    "Boom": "blue"
+  }[status];
+}
+
+function renderReports() {
+  reports.forEach(r => {
+    L.circleMarker([r.lat, r.lng], {
+      radius: 8,
+      color: getColor(r.status)
+    })
+    .addTo(map)
+    .bindPopup(`<b>${r.species}</b><br>${r.status}`);
+  });
+}
+
+renderReports();
+
+function enableReport() {
+  reportMode = true;
+  alert("Click anywhere on the map to place your report.");
+}
+
+map.on('click', function(e) {
+  if (!reportMode) return;
+
+  let species = document.getElementById("species").value;
+  let status = document.getElementById("status").value;
+
+  let report = {
+    lat: e.latlng.lat,
+    lng: e.latlng.lng,
+    species,
+    status
+  };
+
+  reports.push(report);
+  localStorage.setItem("reports", JSON.stringify(reports));
+
+  location.reload();
+});
+</script>
+
+</body>
+</html>
