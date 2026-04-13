@@ -6,105 +6,154 @@
 
 ## 🌄 Overview
 
-SLV Wildlife Watch is a simple, public tool designed to help residents of the San Luis Valley observe and share changes in local wildlife activity.
+SLV Wildlife Watch is a live, community-powered tool built to help residents of the San Luis Valley observe and share changes in local wildlife activity.
 
-Recent discussions in the community have raised questions about:
-- Missing mice populations
-- Changes in rabbits and birds (magpies, ravens, hawks)
-- Shifts in insect activity
-- Variations in fish and water life
+What started as a simple Facebook discussion about missing mice, rabbits, birds, and insects quickly evolved into a real system for tracking patterns across the valley.
 
-This project provides a **shared map** where anyone can contribute observations and help identify patterns.
+This project is being built **in real time**, with community feedback shaping its direction.
 
 ---
 
-## 🧭 How It Works
+## 🚀 Live App
 
-1. Open the live map:
-   👉 https://jkh2.github.io/slv-wildlife-watch/
-
-2. Select:
-   - Species
-   - Status (Missing, Less than usual, Normal, Boom)
-
-3. Click **“Report on Map”**
-
-4. Click anywhere on the map to submit your observation
-
-Your report will appear as a colored marker.
+👉 https://jkh2.github.io/slv-wildlife-watch/
 
 ---
 
-## 🎨 Color Key
+## 🧭 Current Features (Phase 2 - Live System)
 
-- 🔴 Red — Missing
-- 🟠 Orange — Less than usual
-- 🟢 Green — Normal
-- 🔵 Blue — Boom (higher than normal)
+### 🗺️ Interactive Map
+- Click anywhere to submit a report
+- Color-coded markers by status
+- Real-time shared data across all users
 
----
-
-## 🔒 Privacy
-
-- No names required
+### 📊 Shared Database
+- All reports are stored centrally
+- Everyone sees the same data
 - No accounts required
-- No personal data collected
-- Data is currently stored locally in your browser (Phase 1)
 
-Future versions will:
-- Use anonymized shared data
-- Avoid exact household pinpointing
-- Focus on regional patterns, not individuals
+### 🤖 AI Field Assistant
+- Ask questions about patterns and trends
+- AI analyzes submitted reports
+- Provides cautious, grounded responses
+- Designed to avoid speculation and false certainty
 
----
-
-## 🚧 Project Status
-
-**Phase 1 (Current)**
-- Interactive map
-- Local report storage
-- Community testing
-
-**Phase 2 (In Progress)**
-- Shared database (Cloud-based)
-- Anonymous global reporting
-- AI-powered analysis assistant
-
-**Phase 3 (Planned)**
-- Heatmaps and pattern detection
-- Timeline tracking
-- AI-generated insights
-- Exportable reports
+### 🧩 Movable Interface
+- Panels can be dragged anywhere
+- Panels can be resized
+- Designed for flexibility on desktop and mobile
 
 ---
 
-## 🧠 Vision
+## 🎨 Status Legend
 
-This project aims to become a **community-powered observation network** — combining local knowledge with simple technology to better understand environmental changes in the valley.
-
----
-
-## ⚠️ Disclaimer
-
-This tool is for **community observation and discussion only**.  
-It does not provide scientific conclusions or official environmental assessments.
+- 🔴 Missing  
+- 🟠 Less than usual  
+- 🟢 Normal  
+- 🔵 Boom (higher than normal)
 
 ---
 
-## 🤝 Contributing
+## 🧪 How to Use
 
-If you have ideas, improvements, or want to help build this further, feel free to contribute or reach out.
+1. Open the map  
+2. Select species and status  
+3. Click **“Report on Map”**  
+4. Click your general location  
+5. (Optional) Add notes  
+6. Submit  
+
+You can also:
+- Ask the AI questions about patterns
+- Explore what others are seeing
 
 ---
 
-## 🚀 Built With
+## 🔒 Privacy Approach
 
-- GitHub Pages
-- Leaflet.js
-- OpenStreetMap
+- No names or accounts required  
+- No personal data collected  
+- Designed for anonymous participation  
+- Focus is on **patterns, not individuals**
+
+⚠️ Future updates will likely:
+- Reduce location precision (grid-based reporting)
+- Improve anonymity while maintaining usefulness
 
 ---
 
-## 📍 Created by
+## 🧠 What This Project Is
 
-San Luis Valley community initiative
+This is:
+- A **community observation system**
+- A **citizen science experiment**
+- A **pattern detection tool**
+- A **real-time shared intelligence map**
+
+---
+
+## ⚠️ What This Project Is NOT
+
+- Not a scientific study  
+- Not official environmental data  
+- Not a source of confirmed conclusions  
+
+All insights should be treated as:
+👉 **community-reported observations**
+
+---
+
+## 🏗️ Build Progress
+
+### Phase 1 — Prototype (Completed)
+- Basic map
+- Local-only reports (browser storage)
+
+### Phase 2 — Live System (Current)
+- Cloud-based database (D1)
+- Backend API (Cloudflare Workers)
+- Shared real-time reports
+- AI assistant integration
+- Draggable & resizable UI panels
+
+---
+
+## 🔮 Planned Features
+
+- 📊 Heatmap visualization
+- 🧭 Grid-based reporting (privacy + clarity)
+- 📅 Timeline / historical playback
+- 🔄 Auto-refresh updates
+- 📱 Improved mobile interaction
+- 🧠 Advanced AI insights & summaries
+
+---
+
+## 🤝 Community Involvement
+
+This project is being built **with the community**, not just for it.
+
+Feedback, testing, and observations are critical to improving the system.
+
+---
+
+## 🛠️ Tech Stack
+
+- GitHub Pages (frontend)
+- Leaflet.js (mapping)
+- Cloudflare Workers (API)
+- Cloudflare D1 (database)
+- Cloudflare Workers AI (assistant)
+
+---
+
+## 📍 Created By
+
+San Luis Valley community initiative  
+Built live in collaboration with community feedback
+
+---
+
+## ⚡ Status
+
+**Actively being developed in real time**
